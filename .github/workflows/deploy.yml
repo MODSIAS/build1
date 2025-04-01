@@ -1,0 +1,41 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup EMSDK
+      uses: mymindstorm/setup-emsdk@v12
+
+    - name: Build project
+      run: |
+        # Your build commands here
+        echo "Building project..."
+        mkdir -p build_output
+        echo "Hello GitHub Pages" > build_output/index.html
+
+    - name: Debug - List directory contents
+      run: |
+        echo "Current directory structure:"
+        ls -la
+        echo "Build output directory:"
+        ls -la build_output || echo "build_output directory not found"
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3.1.0
+      with:
+        name: build-artifact
+        path: build_output
+        if-no-files-found: error
+
+    - name: Debug - Log artifact info
+      run: echo "Uploaded artifact 'build-artifact' with path 'build_output'"
